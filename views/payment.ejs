@@ -3,20 +3,29 @@
 <head>
   <meta charset="UTF-8">
   <title>Payment - DriveShare</title>
+  <!-- Bootstrap CSS -->
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <!-- Custom CSS -->
   <link rel="stylesheet" href="/css/style.css">
 </head>
 <body class="bg-light">
+  <!-- Navigation -->
   <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
     <a class="navbar-brand" href="/dashboard">DriveShare</a>
   </nav>
   <div class="container mt-4">
-    <h2 class="mb-4">Payment Simulation</h2>
+    <h2 class="mb-4">Payment</h2>
     <p>Amount Due: $<%= amount %></p>
     <form method="POST" action="/payment/pay">
+      <!-- Passing the amount in a hidden field -->
+      <input type="hidden" name="amount" value="<%= amount %>" />
       <div class="form-group">
-        <label>Enter Payment Amount:</label>
-        <input type="number" class="form-control" name="amount" value="<%= amount %>" required />
+         <label>Your User ID (Renter):</label>
+         <input type="text" class="form-control" name="renterId" placeholder="Enter your User ID" required/>
+      </div>
+      <div class="form-group">
+         <label>Car Owner's User ID:</label>
+         <input type="text" class="form-control" name="ownerId" placeholder="Enter the car owner's User ID" required/>
       </div>
       <button type="submit" class="btn btn-success btn-block">Pay Now</button>
     </form>
