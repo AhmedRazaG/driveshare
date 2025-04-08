@@ -1,53 +1,52 @@
 // public/js/mediator.js
 class Mediator {
-    constructor() {
-      this.components = {};
-    }
-    
-    register(name, component) {
-      this.components[name] = component;
-    }
-    
-    notify(sender, event, data) {
-      console.log("Mediator received:", event, "from", sender, "with data", data);
-      if(event === "bookingMade" && this.components['messaging']) {
-        this.components['messaging'].displayNotification("A new booking has been made.");
-      }
-    }
+  constructor() {
+    this.components = {};
   }
   
-  const mediator = new Mediator();
-  
-  // Example booking component
-  class BookingComponent {
-    constructor(mediator) {
-      this.mediator = mediator;
-      mediator.register('booking', this);
-    }
-    
-    bookCar(details) {
-      console.log("Booking car with details:", details);
-      this.mediator.notify('booking', 'bookingMade', details);
-    }
+  register(name, component) {
+    this.components[name] = component;
   }
   
-  // Example messaging component
-  class MessagingComponent {
-    constructor(mediator) {
-      this.mediator = mediator;
-      mediator.register('messaging', this);
-    }
-    
-    displayNotification(message) {
-      console.log("Notification:", message);
-      // You could update the UI here to display notifications
+  notify(sender, event, data) {
+    console.log("Mediator received:", event, "from", sender, "with data", data);
+    if (event === "bookingMade" && this.components['messaging']) {
+      this.components['messaging'].displayNotification("A new booking has been made.");
     }
   }
+}
+
+const mediator = new Mediator();
+
+// Example booking component
+class BookingComponent {
+  constructor(mediator) {
+    this.mediator = mediator;
+    mediator.register('booking', this);
+  }
   
-  // Initialize components
-  const bookingComp = new BookingComponent(mediator);
-  const messagingComp = new MessagingComponent(mediator);
+  bookCar(details) {
+    console.log("Booking car with details:", details);
+    this.mediator.notify('booking', 'bookingMade', details);
+  }
+}
+
+// Example messaging component
+class MessagingComponent {
+  constructor(mediator) {
+    this.mediator = mediator;
+    mediator.register('messaging', this);
+  }
   
-  // Example usage (you can trigger this from UI events)
-  // bookingComp.bookCar({ carId: 1, user: 'John Doe' });
-  
+  displayNotification(message) {
+    alert(message);
+    // Alternatively, update the UI with a notification element
+  }
+}
+
+// Initialize components
+const bookingComp = new BookingComponent(mediator);
+const messagingComp = new MessagingComponent(mediator);
+
+// For testing purposes, you can trigger a booking event
+// bookingComp.bookCar({ carId: 1, renter: 'John Doe' });

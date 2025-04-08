@@ -1,1 +1,25 @@
-//
+/* public/css/style.css */
+body {
+    font-family: Arial, sans-serif;
+  }
+  
+  .navbar-brand {
+    font-weight: bold;
+  }
+  
+  .jumbotron {
+    background-color: #f8f9fa;
+    padding: 2rem 1rem;
+  }
+  
+  .card {
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  }
+  
+  footer {
+    margin-top: 2rem;
+    padding: 1rem 0;
+    background-color: #f8f9fa;
+    text-align: center;
+  }
+  
