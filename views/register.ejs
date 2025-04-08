@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Register</title>
+</head>
+<body>
+  <h1>Register</h1>
+  <form method="POST" action="/auth/register">
+    <label>Email: <input type="email" name="email" required /></label><br>
+    <label>Password: <input type="password" name="password" required /></label><br>
+    <h3>Security Questions</h3>
+    <label>Question 1: <input type="text" name="securityQuestion1" required /></label><br>
+    <label>Answer 1: <input type="text" name="securityAnswer1" required /></label><br>
+    <label>Question 2: <input type="text" name="securityQuestion2" required /></label><br>
+    <label>Answer 2: <input type="text" name="securityAnswer2" required /></label><br>
+    <label>Question 3: <input type="text" name="securityQuestion3" required /></label><br>
+    <label>Answer 3: <input type="text" name="securityAnswer3" required /></label><br>
+    <button type="submit">Register</button>
+  </form>
+</body>
+</html>
