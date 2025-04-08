@@ -1,4 +1,5 @@
 // models/carListingsData.js
-// This array will serve as our in-memory store for car listings.
+// This array serves as an in-memory data store for car listings.
+// In a production environment, you would use a database.
 let carListings = [];
 module.exports = carListings;
