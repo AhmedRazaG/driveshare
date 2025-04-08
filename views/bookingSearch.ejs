@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Search for Cars - DriveShare</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="bg-light">
+  <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <a class="navbar-brand" href="/dashboard">DriveShare</a>
+  </nav>
+  <div class="container mt-4">
+    <h2 class="mb-4">Search for Available Cars</h2>
+    <form method="POST" action="/booking/search">
+      <div class="form-group">
+        <label>Pick-up Location:</label>
+        <input type="text" class="form-control" name="pickupLocation" placeholder="Enter location" required>
+      </div>
+      <button type="submit" class="btn btn-primary btn-block">Search</button>
+    </form>
+  </div>
+</body>
+</html>

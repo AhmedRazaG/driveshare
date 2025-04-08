@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Compose Message - DriveShare</title>
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="bg-light">
+  <!-- Navigation -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <a class="navbar-brand" href="/dashboard">DriveShare</a>
+  </nav>
+
+  <div class="container mt-4">
+    <h2 class="mb-4">Compose a New Message</h2>
+    <form method="POST" action="/messaging/compose">
+      <div class="form-group">
+        <label>Sender ID:</label>
+        <input type="text" class="form-control" name="senderId" placeholder="Enter your User ID" required />
+      </div>
+      <div class="form-group">
+        <label>Receiver ID:</label>
+        <input type="text" class="form-control" name="receiverId" placeholder="Enter recipient User ID" required />
+      </div>
+      <div class="form-group">
+        <label>Message:</label>
+        <textarea class="form-control" name="content" rows="4" placeholder="Enter your message" required></textarea>
+      </div>
+      <button type="submit" class="btn btn-success btn-block">Send Message</button>
+    </form>
+  </div>
+</body>
+</html>
