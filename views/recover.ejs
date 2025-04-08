@@ -3,23 +3,33 @@
 <head>
   <meta charset="UTF-8">
   <title>Password Recovery - DriveShare</title>
+  <!-- Include Bootstrap CSS from CDN -->
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <!-- Custom CSS -->
   <link rel="stylesheet" href="/css/style.css">
 </head>
 <body class="bg-light">
+  <!-- Navigation Bar -->
   <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
     <a class="navbar-brand" href="/dashboard">DriveShare</a>
   </nav>
   <div class="container mt-4">
     <h2 class="mb-4">Password Recovery</h2>
-    <p>Please answer the security question:</p>
-    <p><strong>What is your favorite color?</strong></p>
+    <p>Please answer the following security questions:</p>
     <form method="POST" action="/password/recover">
       <div class="form-group">
-        <label>Your Answer:</label>
-        <input type="text" class="form-control" name="response" required />
+        <label><%= questions[0] %></label>
+        <input type="text" class="form-control" name="answer1" placeholder="Your answer" required />
       </div>
-      <button type="submit" class="btn btn-warning btn-block">Submit Answer</button>
+      <div class="form-group">
+        <label><%= questions[1] %></label>
+        <input type="text" class="form-control" name="answer2" placeholder="Your answer" required />
+      </div>
+      <div class="form-group">
+        <label><%= questions[2] %></label>
+        <input type="text" class="form-control" name="answer3" placeholder="Your answer" required />
+      </div>
+      <button type="submit" class="btn btn-warning btn-block">Submit Answers</button>
     </form>
   </div>
 </body>
