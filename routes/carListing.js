@@ -4,7 +4,15 @@ const router = express.Router();
 const { CarListingBuilder } = require('../models/carListingBuilder');
 
 // In-memory storage for demo purposes
+<<<<<<< Updated upstream
 let carListings = [];
+=======
+// In production, replace with a persistent database.
+//let carListings = [];
+
+const carListings = require('../models/carListingsData');
+
+>>>>>>> Stashed changes
 
 router.get('/list', (req, res) => {
   res.render('carListing', { listings: carListings });
