@@ -5,7 +5,8 @@ const { CarListingBuilder } = require('../models/carListingBuilder');
 
 // In-memory storage for demo purposes
 // In production, replace with a persistent database.
-let carListings = [];
+const carListings = require('../models/carListingsData');
+
 
 /**
  * GET /car/list

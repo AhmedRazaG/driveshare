@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Search Results - DriveShare</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="bg-light">
+  <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <a class="navbar-brand" href="/dashboard">DriveShare</a>
+  </nav>
+  <div class="container mt-4">
+    <h2 class="mb-4">Search Results for "<%= location %>"</h2>
+    <% if (listings.length === 0) { %>
+      <p>No cars found for the specified location. <a href="/booking/search">Try again</a>.</p>
+    <% } else { %>
+      <div class="row">
+        <% listings.forEach(function(listing) { %>
+          <div class="col-md-4 mb-3">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title"><%= listing.model %> (<%= listing.year %>)</h5>
+                <p class="card-text">
+                  Mileage: <%= listing.mileage %> miles<br>
+                  Location: <%= listing.pickupLocation %><br>
+                  Price: $<%= listing.rentalPrice %>/day<br>
+                  Availability: <%= listing.availability %>
+                </p>
+                <a href="/booking/book/<%= listing.id %>" class="btn btn-success btn-sm">Book Now</a>
+              </div>
+            </div>
+          </div>
+        <% }); %>
+      </div>
+    <% } %>
+  </div>
+</body>
+</html>
