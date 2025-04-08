@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Payment</title>
+</head>
+<body>
+  <h1>Payment Page</h1>
+  <form action="/payment/pay" method="POST">
+    <label>Amount: <input type="number" name="amount" value="<%= amount %>" required /></label><br>
+    <button type="submit">Pay Now</button>
+  </form>
+</body>
+</html>

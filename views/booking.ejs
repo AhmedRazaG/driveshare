@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Book a Car</title>
+</head>
+<body>
+  <h1>Book Car ID: <%= listingId %></h1>
+  <form action="/booking/book/<%= listingId %>" method="POST">
+    <label>Renter ID: <input type="text" name="renterId" required /></label><br>
+    <label>Booking Period: <input type="text" name="bookingPeriod" required /></label><br>
+    <button type="submit">Book Now</button>
+  </form>
+</body>
+</html>

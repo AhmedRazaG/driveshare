@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Create Car Listing</title>
+</head>
+<body>
+  <h1>Create a New Car Listing</h1>
+  <form action="/car/create" method="POST">
+    <label>Owner ID: <input type="text" name="ownerId" required /></label><br>
+    <label>Model: <input type="text" name="model" required /></label><br>
+    <label>Year: <input type="number" name="year" required /></label><br>
+    <label>Mileage: <input type="number" name="mileage" required /></label><br>
+    <label>Availability: <input type="text" name="availability" required /></label><br>
+    <label>Pickup Location: <input type="text" name="pickupLocation" required /></label><br>
+    <label>Rental Price: <input type="number" name="rentalPrice" required /></label><br>
+    <button type="submit">Create Listing</button>
+  </form>
+</body>
+</html>

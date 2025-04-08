@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Car Listings</title>
+</head>
+<body>
+  <h1>All Car Listings</h1>
+  <ul>
+    <% listings.forEach(listing => { %>
+      <li><%= listing.model %> - $<%= listing.rentalPrice %></li>
+    <% }); %>
+  </ul>
+</body>
+</html>
