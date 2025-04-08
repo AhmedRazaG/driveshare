@@ -17,11 +17,13 @@ app.set('views', path.join(__dirname, 'views'));
 const authRoutes = require('./routes/auth');
 const carListingRoutes = require('./routes/carListing');
 const bookingRoutes = require('./routes/booking');
+const messagingRoutes = require('./routes/messaging');
 
-// Use routes.
+// Use the routes.
 app.use('/auth', authRoutes);
 app.use('/car', carListingRoutes);
 app.use('/booking', bookingRoutes);
+app.use('/messaging', messagingRoutes);
 
 // Basic pages.
 app.get('/', (req, res) => { res.render('index'); });

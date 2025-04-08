@@ -2,8 +2,11 @@
 const express = require('express');
 const router = express.Router();
 const Booking = require('../models/booking');
-// Import the shared car listings array from our data store.
 const carListings = require('../models/carListingsData');
+
+// Import the message model and messages data store
+const Message = require('../models/message');
+const messagesData = require('../models/messagesData');
 
 /**
  * GET /booking/search
@@ -20,7 +23,6 @@ router.get('/search', (req, res) => {
  */
 router.post('/search', (req, res) => {
   const { location, startDate, endDate } = req.body;
-  // In a more complex system, you would also use startDate/endDate to filter availability.
   res.redirect(
     '/booking/results?location=' +
       encodeURIComponent(location) +
@@ -37,8 +39,7 @@ router.post('/search', (req, res) => {
  */
 router.get('/results', (req, res) => {
   const { location, startDate, endDate } = req.query;
-  // For simplicity, we filter by the pickup location.
-  const results = carListings.filter(listing => 
+  const results = carListings.filter(listing =>
     listing.pickupLocation.toLowerCase().includes(location.toLowerCase())
   );
   res.render('bookingResults', { listings: results, location, startDate, endDate });
@@ -75,22 +76,26 @@ router.post('/book/:id', (req, res) => {
   if (listing.isBooked) {
     return res.send("This car is already booked for the selected period.");
   }
-  
+
   // Create a new booking instance.
   const booking = new Booking(listing, renterId, bookingPeriod);
-  
-  // For demonstration, we add a simple observer that logs notifications.
+
+  // Observer with in-app messaging notification
   const observer = {
-    update: (message) => console.log("Notification:", message)
+    update: (messageText) => {
+      const notification = new Message("System", renterId, messageText);
+      messagesData.push(notification);
+      console.log("Notification sent:", messageText);
+    }
   };
   booking.addObserver(observer);
-  
+
   // Confirm the booking, which also notifies the observer.
   booking.confirmBooking();
-  
+
   // Mark the listing as booked.
   listing.isBooked = true;
-  
+
   res.send(`Booking confirmed for ${listing.model}. Booking period: ${bookingPeriod}`);
 });
 
