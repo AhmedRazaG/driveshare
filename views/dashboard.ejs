@@ -1,11 +1,31 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Dashboard</title>
+  <meta charset="UTF-8">
+  <title>Dashboard - DriveShare</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <link rel="stylesheet" href="/css/style.css">
 </head>
-<body>
-  <h1>Dashboard</h1>
-  <a href="/car/create">Create Car Listing</a><br>
-  <a href="/car/list">View Car Listings</a>
+<body class="bg-light">
+  <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <a class="navbar-brand" href="/">DriveShare</a>
+    <div class="collapse navbar-collapse">
+      <ul class="navbar-nav ml-auto">
+        <li class="nav-item"><a class="nav-link" href="/car/list">View Listings</a></li>
+        <li class="nav-item"><a class="nav-link" href="/car/create">Create Listing</a></li>
+        <li class="nav-item"><a class="nav-link" href="/booking/book/1">Book a Car</a></li>
+        <li class="nav-item"><a class="nav-link" href="/payment/pay">Payment</a></li>
+        <li class="nav-item"><a class="nav-link" href="/password/recover">Recover Password</a></li>
+      </ul>
+    </div>
+  </nav>
+  <div class="container mt-4">
+    <div class="jumbotron">
+      <h1 class="display-4">Hello, Welcome to Your Dashboard!</h1>
+      <p class="lead">Use the navigation bar above to browse or manage listings, book cars, handle payments, or recover your password.</p>
+    </div>
+  </div>
+  <!-- Optionally include mediator usage demonstration -->
+  <script src="/js/mediator.js"></script>
 </body>
 </html>

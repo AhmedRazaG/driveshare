@@ -1,13 +1,26 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Password Recovery</title>
+  <meta charset="UTF-8">
+  <title>Password Recovery - DriveShare</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <link rel="stylesheet" href="/css/style.css">
 </head>
-<body>
-  <h1>Password Recovery</h1>
-  <form action="/password/recover" method="POST">
-    <label>Your Answer: <input type="text" name="response" required /></label><br>
-    <button type="submit">Submit Answer</button>
-  </form>
+<body class="bg-light">
+  <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <a class="navbar-brand" href="/dashboard">DriveShare</a>
+  </nav>
+  <div class="container mt-4">
+    <h2 class="mb-4">Password Recovery</h2>
+    <p>Please answer the security question:</p>
+    <p><strong>What is your favorite color?</strong></p>
+    <form method="POST" action="/password/recover">
+      <div class="form-group">
+        <label>Your Answer:</label>
+        <input type="text" class="form-control" name="response" required />
+      </div>
+      <button type="submit" class="btn btn-warning btn-block">Submit Answer</button>
+    </form>
+  </div>
 </body>
 </html>

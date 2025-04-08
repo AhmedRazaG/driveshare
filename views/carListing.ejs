@@ -1,14 +1,39 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Car Listings</title>
+  <meta charset="UTF-8">
+  <title>Car Listings - DriveShare</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <link rel="stylesheet" href="/css/style.css">
 </head>
-<body>
-  <h1>All Car Listings</h1>
-  <ul>
-    <% listings.forEach(listing => { %>
-      <li><%= listing.model %> - $<%= listing.rentalPrice %></li>
-    <% }); %>
-  </ul>
+<body class="bg-light">
+  <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <a class="navbar-brand" href="/dashboard">DriveShare</a>
+  </nav>
+  <div class="container mt-4">
+    <h2 class="mb-4">Available Car Listings</h2>
+    <% if(listings.length === 0) { %>
+      <p>No listings available. <a href="/car/create">Create a new listing</a>.</p>
+    <% } else { %>
+      <div class="row">
+      <% listings.forEach(function(listing, index) { %>
+        <div class="col-md-4 mb-3">
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title"><%= listing.model %> (<%= listing.year %>)</h5>
+              <p class="card-text">
+                Mileage: <%= listing.mileage %> miles<br>
+                Location: <%= listing.pickupLocation %><br>
+                Price: $<%= listing.rentalPrice %>/day<br>
+                Availability: <%= listing.availability %>
+              </p>
+              <a href="/booking/book/<%= index %>" class="btn btn-primary">Book Now</a>
+            </div>
+          </div>
+        </div>
+      <% }) %>
+      </div>
+    <% } %>
+  </div>
 </body>
 </html>

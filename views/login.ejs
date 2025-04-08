@@ -1,14 +1,30 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Login</title>
+  <meta charset="UTF-8">
+  <title>Login - DriveShare</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <link rel="stylesheet" href="/css/style.css">
 </head>
-<body>
-  <h1>Login</h1>
-  <form method="POST" action="/auth/login">
-    <label>Email: <input type="email" name="email" required /></label><br>
-    <label>Password: <input type="password" name="password" required /></label><br>
-    <button type="submit">Login</button>
-  </form>
+<body class="bg-light">
+  <div class="container">
+    <div class="row justify-content-center mt-5">
+      <div class="col-md-6">
+        <h2 class="mb-4 text-center">Login</h2>
+        <form method="POST" action="/auth/login">
+          <div class="form-group">
+            <label>Email:</label>
+            <input type="email" class="form-control" name="email" required />
+          </div>
+          <div class="form-group">
+            <label>Password:</label>
+            <input type="password" class="form-control" name="password" required />
+          </div>
+          <button type="submit" class="btn btn-primary btn-block">Login</button>
+        </form>
+        <p class="text-center mt-3">Don't have an account? <a href="/auth/register">Register here</a></p>
+      </div>
+    </div>
+  </div>
 </body>
 </html>

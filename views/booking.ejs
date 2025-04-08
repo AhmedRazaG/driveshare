@@ -1,14 +1,29 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Book a Car</title>
+  <meta charset="UTF-8">
+  <title>Book a Car - DriveShare</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <link rel="stylesheet" href="/css/style.css">
 </head>
-<body>
-  <h1>Book Car ID: <%= listingId %></h1>
-  <form action="/booking/book/<%= listingId %>" method="POST">
-    <label>Renter ID: <input type="text" name="renterId" required /></label><br>
-    <label>Booking Period: <input type="text" name="bookingPeriod" required /></label><br>
-    <button type="submit">Book Now</button>
-  </form>
+<body class="bg-light">
+  <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <a class="navbar-brand" href="/dashboard">DriveShare</a>
+  </nav>
+  <div class="container mt-4">
+    <h2 class="mb-4">Book Car Listing #<%= listingId %></h2>
+    <form method="POST" action="/booking/book/<%= listingId %>">
+      <div class="form-group">
+        <label>Your User ID:</label>
+        <input type="text" class="form-control" name="renterId" placeholder="Enter your User ID" required />
+      </div>
+      <div class="form-group">
+        <label>Booking Period:</label>
+        <input type="text" class="form-control" name="bookingPeriod" placeholder="e.g., 2025-05-01 to 2025-05-07" required />
+      </div>
+      <button type="submit" class="btn btn-primary btn-block">Confirm Booking</button>
+    </form>
+  </div>
+  <script src="/js/mediator.js"></script>
 </body>
 </html>

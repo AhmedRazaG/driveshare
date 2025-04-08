@@ -1,13 +1,25 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Payment</title>
+  <meta charset="UTF-8">
+  <title>Payment - DriveShare</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <link rel="stylesheet" href="/css/style.css">
 </head>
-<body>
-  <h1>Payment Page</h1>
-  <form action="/payment/pay" method="POST">
-    <label>Amount: <input type="number" name="amount" value="<%= amount %>" required /></label><br>
-    <button type="submit">Pay Now</button>
-  </form>
+<body class="bg-light">
+  <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <a class="navbar-brand" href="/dashboard">DriveShare</a>
+  </nav>
+  <div class="container mt-4">
+    <h2 class="mb-4">Payment Simulation</h2>
+    <p>Amount Due: $<%= amount %></p>
+    <form method="POST" action="/payment/pay">
+      <div class="form-group">
+        <label>Enter Payment Amount:</label>
+        <input type="number" class="form-control" name="amount" value="<%= amount %>" required />
+      </div>
+      <button type="submit" class="btn btn-success btn-block">Pay Now</button>
+    </form>
+  </div>
 </body>
 </html>
