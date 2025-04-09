@@ -18,7 +18,7 @@ router.get('/create', ensureLoggedIn, (req, res) => {
 
 // ✅ POST /car/create – Process new car listing with proper number parsing
 router.post('/create', ensureLoggedIn, (req, res) => {
-  const { model, year, mileage, availabilityStart, availabilityEnd, pickupLocation, rentalPrice } = req.body;
+  const { model, year, mileage, availability, pickupLocation, rentalPrice } = req.body;
   const ownerId = req.session.user.id;
 
   // Convert numeric fields
@@ -27,9 +27,9 @@ router.post('/create', ensureLoggedIn, (req, res) => {
   const rentalPriceNum = parseFloat(rentalPrice);
 
   const sql = `INSERT INTO car_listings 
-      (ownerId, model, year, mileage, availabilityStart, availabilityEnd, pickupLocation, rentalPrice)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?)`;
-  const params = [ownerId, model, yearNum, mileageNum, availabilityStart, availabilityEnd, pickupLocation, rentalPriceNum];
+      (ownerId, model, year, mileage, availability, pickupLocation, rentalPrice)
+      VALUES (?, ?, ?, ?, ?, ?, ?)`;
+  const params = [ownerId, model, yearNum, mileageNum, availability, pickupLocation, rentalPriceNum];
 
   db.run(sql, params, function(err) {
     if (err) {
@@ -68,7 +68,7 @@ router.get('/edit/:id', ensureLoggedIn, (req, res) => {
 // ✅ POST /car/edit/:id – Process the full edit of a listing
 router.post('/edit/:id', ensureLoggedIn, (req, res) => {
   const id = req.params.id;
-  const { model, year, mileage, availabilityStart, availabilityEnd, pickupLocation, rentalPrice } = req.body;
+  const { model, year, mileage, availability, pickupLocation, rentalPrice } = req.body;
 
   // Convert numeric fields
   const yearNum = parseInt(year);
@@ -77,10 +77,10 @@ router.post('/edit/:id', ensureLoggedIn, (req, res) => {
 
   const sql = `
     UPDATE car_listings 
-    SET model = ?, year = ?, mileage = ?, availabilityStart = ?, availabilityEnd = ?, pickupLocation = ?, rentalPrice = ? 
+    SET model = ?, year = ?, mileage = ?, availability = ?, pickupLocation = ?, rentalPrice = ? 
     WHERE id = ? AND ownerId = ?`;
 
-  const params = [model, yearNum, mileageNum, availabilityStart, availabilityEnd, pickupLocation, rentalPriceNum, id, req.session.user.id];
+  const params = [model, yearNum, mileageNum, availability, pickupLocation, rentalPriceNum, id, req.session.user.id];
 
   db.run(sql, params, function(err) {
     if (err) {

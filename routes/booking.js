@@ -8,6 +8,7 @@ const db = require('../db/database');
 // Import the message model and messages data store
 const Message = require('../models/message');
 const messagesData = require('../models/messagesData');
+const notificationSubject = require('../models/notificationSubject');
 
 // Middleware to ensure the user is logged in
 const ensureLoggedIn = (req, res, next) => {
@@ -31,7 +32,6 @@ router.get('/browse', ensureLoggedIn, (req, res) => {
       console.error(err.message);
       return res.send("Error retrieving car listings.");
     }
-    // Render the 'browseCars' view and pass the car listings as 'listings'
     res.render('browseCars', { listings: rows });
   });
 });
@@ -100,15 +100,12 @@ router.post('/book/:id', (req, res) => {
     return res.send("Listing not found.");
   }
 
-  // Prevent booking if the listing is already booked.
   if (listing.isBooked) {
     return res.send("This car is already booked for the selected period.");
   }
 
-  // Create a new booking instance.
   const booking = new Booking(listing, renterId, bookingPeriod);
 
-  // Observer with in-app messaging notification
   const observer = {
     update: (messageText) => {
       const notification = new Message("System", renterId, messageText);
@@ -118,11 +115,12 @@ router.post('/book/:id', (req, res) => {
   };
   booking.addObserver(observer);
 
-  // Confirm the booking, which also notifies the observer.
   booking.confirmBooking();
 
-  // Mark the listing as booked.
   listing.isBooked = true;
+
+  notificationSubject.notifyObservers(`Your booking for "${listing.model}" on ${bookingPeriod} is confirmed!`, req.session.user.id);
+  notificationSubject.notifyObservers(`Your car "${listing.model}" has been booked on ${bookingPeriod}.`, listing.ownerId);
 
   res.send(`Booking confirmed for ${listing.model}. Booking period: ${bookingPeriod}`);
 });

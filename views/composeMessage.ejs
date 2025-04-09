@@ -1,30 +1,26 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="UTF-8">
-  <title>Compose Message - DriveShare</title>
+  <title>Compose Message</title>
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-  <link rel="stylesheet" href="/css/style.css">
 </head>
-<body class="bg-light">
-  <%- include('partials/header') %>
+<body>
   <div class="container mt-4">
-    <h2>Compose a New Message</h2>
+    <h2>Compose Message</h2>
     <form method="POST" action="/messaging/compose">
       <div class="form-group">
-        <label>Your User ID</label>
-        <input type="text" class="form-control" name="senderId" placeholder="Enter your User ID (e.g., 1)" required>
+        <label for="senderId">Sender ID:</label>
+        <input type="text" class="form-control" name="senderId" id="senderId" required>
       </div>
       <div class="form-group">
-        <label>Recipient User ID</label>
-        <!-- Changed from 'receiverEmail' to 'receiverId' to match the route check -->
-        <input type="text" class="form-control" name="receiverId" placeholder="Enter recipient User ID (e.g., 2)" required>
+        <label for="receiverId">Receiver ID:</label>
+        <input type="text" class="form-control" name="receiverId" id="receiverId" required>
       </div>
       <div class="form-group">
-        <label>Message</label>
-        <textarea class="form-control" name="content" rows="4" placeholder="Write your message here..." required></textarea>
+        <label for="content">Message Content:</label>
+        <textarea class="form-control" name="content" id="content" rows="5" required></textarea>
       </div>
-      <button type="submit" class="btn btn-success btn-block">Send Message</button>
+      <button type="submit" class="btn btn-primary">Send Message</button>
     </form>
   </div>
 </body>

@@ -23,7 +23,7 @@
       <p>No cars available. Please try a different search.</p>
     <% } else { %>
       <div class="row">
-        <% listings.forEach(function(listing) {
+        <% listings.forEach(function(listing) { 
              let availableDates = [];
              try { 
                availableDates = JSON.parse(listing.availability); 
@@ -37,7 +37,8 @@
                 <p>
                   <strong>Mileage:</strong> <%= listing.mileage %> miles<br>
                   <strong>Location:</strong> <%= listing.pickupLocation %><br>
-                  <strong>Price:</strong> $<%= listing.rentalPrice %>/day
+                  <strong>Price:</strong> $<%= listing.rentalPrice %>/day<br>
+                  <strong>Contact:</strong> <%= listing.ownerName %> (<%= listing.ownerEmail %>)
                 </p>
                 <hr>
                 <h5>Available Dates:</h5>

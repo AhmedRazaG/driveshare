@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Notifications - DriveShare</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="bg-light">
+  <%- include('partials/header') %>
+  <div class="container mt-4">
+    <h2>Your Notifications</h2>
+    <% if(notifications.length === 0){ %>
+      <p>No notifications yet.</p>
+    <% } else { %>
+      <ul class="list-group">
+        <% notifications.forEach(function(notif){ %>
+          <li class="list-group-item">
+            <%= notif.notification %><br>
+            <small class="text-muted"><%= new Date(notif.datetime).toLocaleString() %></small>
+          </li>
+        <% }) %>
+      </ul>
+    <% } %>
+  </div>
+</body>
+</html>

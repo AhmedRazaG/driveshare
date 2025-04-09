@@ -22,13 +22,13 @@
                 <p class="card-text">
                   Mileage: <%= listing.mileage %> miles<br>
                   Price: $<%= listing.rentalPrice %>/day<br>
-                  Available from: <%= listing.availabilityStart %> to <%= listing.availabilityEnd %><br>
+                  Availability: <%= listing.availability %><br>
                   Status: <%= listing.isBooked ? "Booked" : "Available" %>
                 </p>
                 <a href="/car/edit/<%= listing.id %>" class="btn btn-secondary btn-sm">Edit</a>
-                <a href="/car/delete/<%= listing.id %>" class="btn btn-danger btn-sm">Delete</a>
+                <a href="/car/delete/<%= listing.id %>" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this listing?');">Delete</a>
                 <% if(listing.isBooked){ %>
-                  <a href="/car/deleteBookings/<%= listing.id %>" class="btn btn-warning btn-sm">Cancel Booking</a>
+                <a href="/car/deleteBookings/<%= listing.id %>" class="btn btn-warning btn-sm">Cancel Booking</a>
                 <% } %>
               </div>
             </div>
