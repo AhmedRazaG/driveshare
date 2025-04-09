@@ -1,23 +1,27 @@
-// models/message.js
-/**
- * The Message class represents an in-app message or notification.
- */
-class Message {
-    /**
-     * Constructor for a Message.
-     * @param {number|string} senderId - The user ID of the sender.
-     * @param {number|string} receiverId - The user ID of the recipient.
-     * @param {string} content - The content of the message.
-     */
-    constructor(senderId, receiverId, content) {
-      // Generate a simple unique ID based on timestamp.
-      this.id = Date.now() + "-" + Math.floor(Math.random() * 1000);
-      this.senderId = senderId;
-      this.receiverId = receiverId;
-      this.content = content;
-      this.timestamp = new Date();
-    }
+// models/carListingsData.js
+// This array now contains some dummy car listings.
+let carListings = [
+  {
+    id: 1623456789012,
+    ownerId: 1,
+    model: "Toyota Camry",
+    year: 2019,
+    mileage: 30000,
+    availability: "Mon-Fri, 8AM-8PM",
+    pickupLocation: "New York",
+    rentalPrice: 50,
+    isBooked: false
+  },
+  {
+    id: 1623456789013,
+    ownerId: 2,
+    model: "Honda Civic",
+    year: 2020,
+    mileage: 20000,
+    availability: "Weekends, 10AM-6PM",
+    pickupLocation: "Los Angeles",
+    rentalPrice: 60,
+    isBooked: false
   }
-  
-  module.exports = Message;
-  
+];
+module.exports = carListings;
