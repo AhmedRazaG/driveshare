@@ -1,0 +1,32 @@
+<!-- views/partials/header.ejs -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+  <a class="navbar-brand" href="/dashboard">DriveShare</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+    aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarNav">
+    <ul class="navbar-nav ml-auto">
+      <!-- Dashboard/Home -->
+      <li class="nav-item">
+        <a class="nav-link" href="/dashboard">Home</a>
+      </li>
+      <!-- Host Car: updated URL -->
+      <li class="nav-item">
+        <a class="nav-link" href="/car/create">Host Car</a>
+      </li>
+      <!-- Browse Cars (Assuming your route is /booking/browse or similar) -->
+      <li class="nav-item">
+        <a class="nav-link" href="/booking/browse">Browse Cars</a>
+      </li>
+      <!-- Messages -->
+      <li class="nav-item">
+        <a class="nav-link" href="/messaging">Messages</a>
+      </li>
+      <!-- Logout (Ensure you have a logout route implemented) -->
+      <li class="nav-item">
+        <a class="nav-link" href="/auth/logout">Logout</a>
+      </li>
+    </ul>
+  </div>
+</nav>

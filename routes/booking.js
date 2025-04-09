@@ -3,10 +3,38 @@ const express = require('express');
 const router = express.Router();
 const Booking = require('../models/booking');
 const carListings = require('../models/carListingsData');
+const db = require('../db/database');
 
 // Import the message model and messages data store
 const Message = require('../models/message');
 const messagesData = require('../models/messagesData');
+
+// Middleware to ensure the user is logged in
+const ensureLoggedIn = (req, res, next) => {
+  if (!req.session.user) return res.redirect('/auth/login');
+  next();
+};
+
+/**
+ * GET /booking/browse
+ * Fetches car listings from the database and renders the browseCars.ejs page.
+ */
+router.get('/browse', ensureLoggedIn, (req, res) => {
+  const sql = `
+    SELECT car_listings.*, users.fullName as ownerName 
+    FROM car_listings 
+    JOIN users ON car_listings.ownerId = users.id
+  `;
+  
+  db.all(sql, [], (err, rows) => {
+    if (err) {
+      console.error(err.message);
+      return res.send("Error retrieving car listings.");
+    }
+    // Render the 'browseCars' view and pass the car listings as 'listings'
+    res.render('browseCars', { listings: rows });
+  });
+});
 
 /**
  * GET /booking/search

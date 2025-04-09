@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Edit Listing - DriveShare</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="bg-light">
+  <%- include('partials/header') %>
+  <div class="container mt-4">
+    <h2>Edit Your Car Listing</h2>
+    <form method="POST" action="/car/edit/<%= listing.id %>">
+      <div class="form-group">
+        <label>Car Model</label>
+        <input type="text" class="form-control" name="model" value="<%= listing.model %>" required>
+      </div>
+      <div class="form-group">
+        <label>Year</label>
+        <input type="number" class="form-control" name="year" value="<%= listing.year %>" required>
+      </div>
+      <div class="form-group">
+        <label>Mileage</label>
+        <input type="number" class="form-control" name="mileage" value="<%= listing.mileage %>" required>
+      </div>
+      <div class="form-group">
+        <label>Available Dates (JSON Format)</label>
+        <textarea class="form-control" name="availability" required><%= listing.availability %></textarea>
+        <small class="form-text text-muted">For example: ["2025-05-01", "2025-05-02"]</small>
+      </div>
+      <div class="form-group">
+        <label>Pick-up Location</label>
+        <input type="text" class="form-control" name="pickupLocation" value="<%= listing.pickupLocation %>" required>
+      </div>
+      <div class="form-group">
+        <label>Rental Price (per day)</label>
+        <input type="number" class="form-control" name="rentalPrice" value="<%= listing.rentalPrice %>" required>
+      </div>
+      <button type="submit" class="btn btn-primary">Update Listing</button>
+    </form>
+  </div>
+</body>
+</html>

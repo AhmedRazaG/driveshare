@@ -1,30 +1,50 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="UTF-8">
-  <title>Book Car - DriveShare</title>
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-  <link rel="stylesheet" href="/css/style.css">
-</head>
-<body class="bg-light">
-  <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-    <a class="navbar-brand" href="/dashboard">DriveShare</a>
-  </nav>
-  <div class="container mt-4">
-    <h2>Book Car: <%= listing.model %> (<%= listing.year %>)</h2>
-    <p><strong>Location:</strong> <%= listing.pickupLocation %></p>
-    <p><strong>Price:</strong> $<%= listing.rentalPrice %>/day</p>
-    <form method="POST" action="/booking/book/<%= listing.id %>">
-      <div class="form-group">
-        <label>Your User ID:</label>
-        <input type="text" class="form-control" name="renterId" placeholder="Enter your User ID" required>
-      </div>
-      <div class="form-group">
-        <label>Booking Period:</label>
-        <input type="text" class="form-control" name="bookingPeriod" placeholder="e.g., 2025-05-01 to 2025-05-07" required>
-      </div>
-      <button type="submit" class="btn btn-success btn-block">Confirm Booking</button>
-    </form>
-  </div>
-</body>
-</html>
+const express = require('express');
+const router = express.Router();
+const db = require('../db/database');
+const ensureLoggedIn = (req, res, next) => {
+  if (!req.session.user) return res.redirect('/auth/login');
+  next();
+};
+
+router.get('/book', ensureLoggedIn, (req, res) => {
+  // Expect listingId and date in query parameters.
+  const { listingId, date } = req.query;
+  if (!listingId || !date) {
+    return res.send("Listing and date must be specified.");
+  }
+  // Retrieve the listing.
+  const sql = "SELECT * FROM car_listings WHERE id = ?";
+  db.get(sql, [listingId], (err, listing) => {
+    if (err || !listing) {
+      return res.send("Listing not found.");
+    }
+    // Parse availability.
+    let availableDates = [];
+    try { availableDates = JSON.parse(listing.availability); } catch(e) { }
+    // Check if the selected date is available.
+    if (!availableDates.includes(date)) {
+      return res.send("Selected date is not available.");
+    }
+    // Proceed to create booking.
+    const renterId = req.session.user.id;
+    const insertSql = `INSERT INTO bookings (listingId, renterId, bookingDate) VALUES (?, ?, ?)`;
+    db.run(insertSql, [listingId, renterId, date], function(err) {
+      if (err) {
+        console.error(err.message);
+        return res.send("Error processing booking.");
+      }
+      // Remove the booked date from the availability array.
+      availableDates = availableDates.filter(d => d !== date);
+      const updateSql = "UPDATE car_listings SET availability = ? WHERE id = ?";
+      db.run(updateSql, [JSON.stringify(availableDates), listingId], function(err) {
+        if (err) {
+          console.error(err.message);
+          return res.send("Error updating availability.");
+        }
+        res.send(`Booking confirmed for ${date}.`);
+      });
+    });
+  });
+});
+
+module.exports = router;

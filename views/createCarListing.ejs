@@ -2,55 +2,99 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>Create Car Listing - DriveShare</title>
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <title>Host Your Car - DriveShare</title>
+  <link rel="stylesheet"
+    href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
   <link rel="stylesheet" href="/css/style.css">
+  <style>
+    /* Optional: style the list of selected dates */
+    #selectedDates li {
+      margin-bottom: 5px;
+    }
+  </style>
 </head>
 <body class="bg-light">
-  <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-    <a class="navbar-brand" href="/dashboard">DriveShare</a>
-  </nav>
+  <%- include('partials/header') %>
   <div class="container mt-4">
-    <h2 class="mb-4">Create a Car Listing</h2>
-    <form method="POST" action="/car/create">
-
+    <h2>Host Your Car</h2>
+    <form method="POST" action="/car/create" id="createCarForm">
       <div class="form-group">
-        <label>Owner ID:</label>
-        <input type="text" class="form-control" name="ownerId" placeholder="e.g., 1" required />
+        <label>Car Model</label>
+        <input type="text" class="form-control" name="model" placeholder="e.g., Toyota Camry" required>
       </div>
-
       <div class="form-group">
-        <label>Car Model:</label>
-        <input type="text" class="form-control" name="model" placeholder="e.g., Toyota Camry" required />
+        <label>Year</label>
+        <input type="number" class="form-control" name="year" placeholder="e.g., 2019" required>
       </div>
-
       <div class="form-group">
-        <label>Year:</label>
-        <input type="number" class="form-control" name="year" placeholder="e.g., 2020" required />
+        <label>Mileage</label>
+        <input type="number" class="form-control" name="mileage" placeholder="e.g., 30000" required>
       </div>
-
+      <!-- Availability: multi-date picker -->
       <div class="form-group">
-        <label>Mileage:</label>
-        <input type="number" class="form-control" name="mileage" placeholder="e.g., 45000" required />
+        <label>Select Available Dates</label>
+        <input type="date" id="datePicker" class="form-control">
+        <small class="form-text text-muted">Double-click the date field to add the date to the list.</small>
+        <ul id="selectedDates" class="list-unstyled mt-2"></ul>
+        <!-- Hidden input to store the JSON array of dates -->
+        <input type="hidden" name="availability" id="availabilityInput">
       </div>
-
       <div class="form-group">
-        <label>Availability:</label>
-        <input type="text" class="form-control" name="availability" placeholder="e.g., Mon-Fri, 8AM-8PM" required />
+        <label>Pick-up Location</label>
+        <input type="text" class="form-control" name="pickupLocation" placeholder="e.g., New York" required>
       </div>
-
       <div class="form-group">
-        <label>Pick-up Location:</label>
-        <input type="text" class="form-control" name="pickupLocation" placeholder="e.g., New York" required />
+        <label>Rental Price (per day)</label>
+        <input type="number" class="form-control" name="rentalPrice" placeholder="e.g., 50" required>
       </div>
-
-      <div class="form-group">
-        <label>Rental Price (per day):</label>
-        <input type="number" class="form-control" name="rentalPrice" placeholder="e.g., 50" required />
-      </div>
-
       <button type="submit" class="btn btn-success btn-block">Create Listing</button>
     </form>
   </div>
+
+  <script>
+    // Array to hold selected dates.
+    let selectedDates = [];
+
+    // Update the hidden input field with the JSON string.
+    function updateAvailabilityInput() {
+      document.getElementById('availabilityInput').value = JSON.stringify(selectedDates);
+    }
+
+    // Add a date to the list.
+    function addDate(dateStr) {
+      // Avoid duplicates.
+      if (!selectedDates.includes(dateStr)) {
+        selectedDates.push(dateStr);
+        renderDates();
+      }
+    }
+
+    // Remove a date from the list.
+    function removeDate(dateStr) {
+      selectedDates = selectedDates.filter(d => d !== dateStr);
+      renderDates();
+    }
+
+    // Render the list of selected dates.
+    function renderDates() {
+      const ul = document.getElementById('selectedDates');
+      ul.innerHTML = '';
+      selectedDates.forEach(dateStr => {
+        const li = document.createElement('li');
+        li.innerHTML = `${dateStr} <button type="button" class="btn btn-sm btn-danger" onclick="removeDate('${dateStr}')">Delete</button>`;
+        ul.appendChild(li);
+      });
+      updateAvailabilityInput();
+    }
+
+    // When the date field is double clicked, add the selected date.
+    document.getElementById('datePicker').addEventListener('dblclick', function () {
+      if (this.value) {
+        addDate(this.value);
+        // Optionally clear the date picker field.
+        this.value = '';
+      }
+    });
+  </script>
 </body>
 </html>

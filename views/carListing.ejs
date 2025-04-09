@@ -1,39 +1,121 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="UTF-8">
-  <title>Car Listings - DriveShare</title>
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-  <link rel="stylesheet" href="/css/style.css">
-</head>
-<body class="bg-light">
-  <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-    <a class="navbar-brand" href="/dashboard">DriveShare</a>
-  </nav>
-  <div class="container mt-4">
-    <h2 class="mb-4">Available Car Listings</h2>
-    <% if(listings.length === 0) { %>
-      <p>No listings available. <a href="/car/create">Create a new listing</a>.</p>
-    <% } else { %>
-      <div class="row">
-      <% listings.forEach(function(listing, index) { %>
-        <div class="col-md-4 mb-3">
-          <div class="card">
-            <div class="card-body">
-              <h5 class="card-title"><%= listing.model %> (<%= listing.year %>)</h5>
-              <p class="card-text">
-                Mileage: <%= listing.mileage %> miles<br>
-                Location: <%= listing.pickupLocation %><br>
-                Price: $<%= listing.rentalPrice %>/day<br>
-                Availability: <%= listing.availability %>
-              </p>
-              <a href="/booking/book/<%= index %>" class="btn btn-primary">Book Now</a>
-            </div>
-          </div>
-        </div>
-      <% }) %>
-      </div>
-    <% } %>
-  </div>
-</body>
-</html>
+const express = require('express');
+const router = express.Router();
+const db = require('../db/database');
+
+// Middleware: ensure that the user is logged in.
+function ensureLoggedIn(req, res, next) {
+  if (!req.session.user) {
+    return res.redirect('/auth/login');
+  }
+  next();
+}
+
+// GET /car/create – Render the "Host Your Car" page.
+router.get('/create', ensureLoggedIn, (req, res) => {
+  res.render('createCarListing');
+});
+
+// POST /car/create – Process new car listing.
+router.post('/create', ensureLoggedIn, (req, res) => {
+  const { model, year, mileage, availabilityStart, availabilityEnd, pickupLocation, rentalPrice } = req.body;
+  const ownerId = req.session.user.id;
+  const sql = `INSERT INTO car_listings 
+      (ownerId, model, year, mileage, availabilityStart, availabilityEnd, pickupLocation, rentalPrice)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?)`;
+  const params = [ownerId, model, year, mileage, availabilityStart, availabilityEnd, pickupLocation, rentalPrice];
+  db.run(sql, params, function(err) {
+    if (err) {
+      console.error(err.message);
+      return res.send("Error creating car listing.");
+    }
+    res.redirect('/car/mylistings');
+  });
+});
+
+// GET /car/mylistings – Show listings owned by the logged-in user.
+router.get('/mylistings', ensureLoggedIn, (req, res) => {
+  const ownerId = req.session.user.id;
+  const sql = "SELECT * FROM car_listings WHERE ownerId = ?";
+  db.all(sql, [ownerId], (err, listings) => {
+    if (err) {
+      console.error(err.message);
+      return res.send("Error fetching your listings.");
+    }
+    res.render('myListings', { listings, user: req.session.user });
+  });
+});
+
+// GET /car/edit/:id – Render edit form for a specific listing (only if owned by the user).
+router.get('/edit/:id', ensureLoggedIn, (req, res) => {
+  const id = req.params.id;
+  const sql = "SELECT * FROM car_listings WHERE id = ? AND ownerId = ?";
+  db.get(sql, [id, req.session.user.id], (err, listing) => {
+    if (err || !listing) {
+      return res.send("Listing not found or you are not authorized.");
+    }
+    res.render('editCarListing', { listing });
+  });
+});
+
+// POST /car/edit/:id – Process edit of a listing.
+router.post('/edit/:id', ensureLoggedIn, (req, res) => {
+  const id = req.params.id;
+  const { availabilityStart, availabilityEnd, rentalPrice } = req.body;
+  const sql = "UPDATE car_listings SET availabilityStart = ?, availabilityEnd = ?, rentalPrice = ? WHERE id = ? AND ownerId = ?";
+  db.run(sql, [availabilityStart, availabilityEnd, rentalPrice, id, req.session.user.id], function(err) {
+    if (err) {
+      console.error(err.message);
+      return res.send("Error updating listing.");
+    }
+    res.redirect('/car/mylistings');
+  });
+});
+
+// GET /car/delete/:id – Delete a listing if not booked.
+router.get('/delete/:id', ensureLoggedIn, (req, res) => {
+  const id = req.params.id;
+  // First, check if there is any active booking for this listing.
+  const sqlCheck = "SELECT COUNT(*) AS count FROM bookings WHERE listingId = ?";
+  db.get(sqlCheck, [id], (err, row) => {
+    if (err) {
+      console.error(err.message);
+      return res.send("Error checking booking status.");
+    }
+    if (row.count > 0) {
+      return res.send("Cannot delete listing because it has active bookings. You can cancel bookings instead.");
+    } else {
+      const sqlDelete = "DELETE FROM car_listings WHERE id = ? AND ownerId = ?";
+      db.run(sqlDelete, [id, req.session.user.id], function(err) {
+        if (err) {
+          console.error(err.message);
+          return res.send("Error deleting listing.");
+        }
+        res.redirect('/car/mylistings');
+      });
+    }
+  });
+});
+
+// (Optional) Route to delete/cancel bookings for a listing
+router.get('/deleteBookings/:id', ensureLoggedIn, (req, res) => {
+  const listingId = req.params.id;
+  // This route cancels all bookings for the listing and updates its status.
+  const sqlDeleteBookings = "DELETE FROM bookings WHERE listingId = ?";
+  db.run(sqlDeleteBookings, [listingId], function(err) {
+    if (err) {
+      console.error(err.message);
+      return res.send("Error deleting bookings.");
+    }
+    // Update listing to mark as not booked.
+    const sqlUpdate = "UPDATE car_listings SET isBooked = 0 WHERE id = ?";
+    db.run(sqlUpdate, [listingId], function(err) {
+      if (err) {
+        console.error(err.message);
+        return res.send("Error updating listing status.");
+      }
+      res.redirect('/car/mylistings');
+    });
+  });
+});
+
+module.exports = router;

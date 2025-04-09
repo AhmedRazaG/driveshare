@@ -7,25 +7,15 @@
   <link rel="stylesheet" href="/css/style.css">
 </head>
 <body class="bg-light">
-  <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-    <a class="navbar-brand" href="/">DriveShare</a>
-    <div class="collapse navbar-collapse">
-      <ul class="navbar-nav ml-auto">
-        <li class="nav-item"><a class="nav-link" href="/car/list">View Listings</a></li>
-        <li class="nav-item"><a class="nav-link" href="/car/create">Create Listing</a></li>
-        <li class="nav-item"><a class="nav-link" href="/booking/book/1">Book a Car</a></li>
-        <li class="nav-item"><a class="nav-link" href="/payment/pay">Payment</a></li>
-        <li class="nav-item"><a class="nav-link" href="/password/recover">Recover Password</a></li>
-      </ul>
-    </div>
-  </nav>
+  <%- include('partials/header') %>
   <div class="container mt-4">
     <div class="jumbotron">
-      <h1 class="display-4">Hello, Welcome to Your Dashboard!</h1>
-      <p class="lead">Use the navigation bar above to browse or manage listings, book cars, handle payments, or recover your password.</p>
+      <h1 class="display-4">Welcome, <%= user.fullName %>!</h1>
+      <p class="lead">This is your personalized dashboard. You can host your car, browse available rentals, view your messages, and manage your bookings.</p>
+      <hr class="my-4">
+      <a href="/car/mylistings" class="btn btn-info btn-lg">My Listings</a>
+      <!-- Add other navigation options as needed -->
     </div>
-  </div>
-  <!-- Optionally include mediator usage demonstration -->
-  <script src="/js/mediator.js"></script>
+  </div>  
 </body>
 </html>

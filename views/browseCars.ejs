@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Browse Cars - DriveShare</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    .available-date {
+      font-weight: bold;
+    }
+    .checkmark {
+      color: green;
+      margin-right: 5px;
+    }
+  </style>
+</head>
+<body class="bg-light">
+  <%- include('partials/header') %>
+  <div class="container mt-4">
+    <h2>Browse Available Cars</h2>
+    <% if (listings.length === 0) { %>
+      <p>No cars available. Please try a different search.</p>
+    <% } else { %>
+      <div class="row">
+        <% listings.forEach(function(listing) {
+             let availableDates = [];
+             try { 
+               availableDates = JSON.parse(listing.availability); 
+             } catch(e) { console.error(e); }
+        %>
+          <div class="col-md-6 mb-4">
+            <div class="card">
+              <div class="card-body">
+                <h3 class="card-title"><%= listing.model %> (<%= listing.year %>)</h3>
+                <p>Hosted by: <%= listing.ownerName %></p>
+                <p>
+                  <strong>Mileage:</strong> <%= listing.mileage %> miles<br>
+                  <strong>Location:</strong> <%= listing.pickupLocation %><br>
+                  <strong>Price:</strong> $<%= listing.rentalPrice %>/day
+                </p>
+                <hr>
+                <h5>Available Dates:</h5>
+                <% if (availableDates.length === 0) { %>
+                  <p>No available dates.</p>
+                <% } else { %>
+                  <ul class="list-unstyled">
+                    <% availableDates.forEach(function(date) { %>
+                      <li class="available-date">
+                        <span class="checkmark">&#10004;</span> <%= date %> 
+                        <a href="/booking/book?listingId=<%= listing.id %>&date=<%= date %>" class="btn btn-sm btn-primary">Rent</a>
+                      </li>
+                    <% }); %>
+                  </ul>
+                <% } %>
+              </div>
+            </div>
+          </div>
+        <% }) %>
+      </div>
+    <% } %>
+  </div>
+</body>
+</html>

@@ -3,33 +3,35 @@
 <head>
   <meta charset="UTF-8">
   <title>Password Recovery - DriveShare</title>
-  <!-- Include Bootstrap CSS from CDN -->
+  <!-- Bootstrap CSS -->
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-  <!-- Custom CSS -->
+  <!-- Custom CSS if any -->
   <link rel="stylesheet" href="/css/style.css">
 </head>
 <body class="bg-light">
-  <!-- Navigation Bar -->
-  <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-    <a class="navbar-brand" href="/dashboard">DriveShare</a>
-  </nav>
   <div class="container mt-4">
     <h2 class="mb-4">Password Recovery</h2>
-    <p>Please answer the following security questions:</p>
     <form method="POST" action="/password/recover">
+      <!-- Email Input -->
+      <div class="form-group">
+        <label>Enter your Email</label>
+        <input type="email" class="form-control" name="email" placeholder="your.email@example.com" required>
+      </div>
+      <!-- Security Questions -->
+      <h4 class="mt-4">Answer the following security questions:</h4>
       <div class="form-group">
         <label><%= questions[0] %></label>
-        <input type="text" class="form-control" name="answer1" placeholder="Your answer" required />
+        <input type="text" class="form-control" name="answer1" placeholder="Your answer" required>
       </div>
       <div class="form-group">
         <label><%= questions[1] %></label>
-        <input type="text" class="form-control" name="answer2" placeholder="Your answer" required />
+        <input type="text" class="form-control" name="answer2" placeholder="Your answer" required>
       </div>
       <div class="form-group">
         <label><%= questions[2] %></label>
-        <input type="text" class="form-control" name="answer3" placeholder="Your answer" required />
+        <input type="text" class="form-control" name="answer3" placeholder="Your answer" required>
       </div>
-      <button type="submit" class="btn btn-warning btn-block">Submit Answers</button>
+      <button type="submit" class="btn btn-warning btn-block">Recover Password</button>
     </form>
   </div>
 </body>

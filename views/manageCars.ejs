@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Manage Cars - DriveShare</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="bg-light">
+  <%- include('partials/header') %>
+  <div class="container mt-4">
+    <h2>Your Car Listings</h2>
+    <% if (listings.length === 0) { %>
+      <p>You have not listed any cars yet. <a href="/car/host">Host your car now</a>.</p>
+    <% } else { %>
+      <div class="row">
+        <% listings.forEach(function(listing) { %>
+          <div class="col-md-4 mb-3">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title"><%= listing.model %> (<%= listing.year %>)</h5>
+                <p class="card-text">
+                  Price: $<%= listing.rentalPrice %>/day<br>
+                  Availability: <%= listing.availability %>
+                </p>
+                <% if (!listing.isBooked) { %>
+                  <a href="/car/edit/<%= listing.id %>" class="btn btn-secondary btn-sm">Edit</a>
+                  <a href="/car/delete/<%= listing.id %>" class="btn btn-danger btn-sm">Delete</a>
+                <% } else { %>
+                  <span class="badge badge-warning">Currently Booked</span>
+                <% } %>
+              </div>
+            </div>
+          </div>
+        <% }) %>
+      </div>
+    <% } %>
+  </div>
+</body>
+</html>

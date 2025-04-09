@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>My Listings - DriveShare</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="bg-light">
+  <%- include('partials/header') %>
+  <div class="container mt-4">
+    <h2>Your Car Listings</h2>
+    <% if(listings.length === 0){ %>
+      <p>You have not listed any car yet. <a href="/car/create">Host your car now!</a></p>
+    <% } else { %>
+      <div class="row">
+        <% listings.forEach(function(listing){ %>
+          <div class="col-md-4 mb-3">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title"><%= listing.model %> (<%= listing.year %>)</h5>
+                <p class="card-text">
+                  Mileage: <%= listing.mileage %> miles<br>
+                  Price: $<%= listing.rentalPrice %>/day<br>
+                  Available from: <%= listing.availabilityStart %> to <%= listing.availabilityEnd %><br>
+                  Status: <%= listing.isBooked ? "Booked" : "Available" %>
+                </p>
+                <a href="/car/edit/<%= listing.id %>" class="btn btn-secondary btn-sm">Edit</a>
+                <a href="/car/delete/<%= listing.id %>" class="btn btn-danger btn-sm">Delete</a>
+                <% if(listing.isBooked){ %>
+                  <a href="/car/deleteBookings/<%= listing.id %>" class="btn btn-warning btn-sm">Cancel Booking</a>
+                <% } %>
+              </div>
+            </div>
+          </div>
+        <% }) %>
+      </div>
+    <% } %>
+  </div>
+</body>
+</html>
