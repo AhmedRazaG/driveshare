@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Compose Message - DriveShare</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="bg-light">
+  <%- include('../partials/header') %>
+  <div class="container mt-4">
+    <div class="row justify-content-center">
+      <div class="col-md-8">
+        <div class="card">
+          <div class="card-body">
+            <h2 class="card-title mb-4">Compose Message</h2>
+            <form method="POST" action="/messaging/send">
+              <div class="form-group">
+                <label>To (Email)</label>
+                <input type="email" class="form-control" name="to" value="<%= to || '' %>" required>
+                <small class="form-text text-muted">Enter the recipient's email address</small>
+              </div>
+              <div class="form-group">
+                <label>Subject</label>
+                <input type="text" class="form-control" name="subject" required>
+              </div>
+              <div class="form-group">
+                <label>Message</label>
+                <textarea class="form-control" name="message" rows="5" required></textarea>
+              </div>
+              <div class="form-group">
+                <button type="submit" class="btn btn-primary">Send Message</button>
+                <a href="/messaging" class="btn btn-secondary">Cancel</a>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html> 

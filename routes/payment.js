@@ -2,9 +2,8 @@
 const express = require('express');
 const router = express.Router();
 const PaymentProxy = require('../models/paymentProxy');
-// Import Message model and in-memory messages store to simulate notifications.
-const Message = require('../models/message');
-const messagesData = require('../models/messagesData');
+// Import notification subject
+const notificationSubject = require('../models/notificationSubject');
 
 /**
  * GET /payment/pay
@@ -32,19 +31,10 @@ router.post('/pay', (req, res) => {
   const success = paymentProxy.processPayment(amount);
   
   if (success) {
-    // Create notifications for both owner and renter.
-    // Here we simulate a system notification by creating messages.
-    let ownerNotification = new Message(
-      "PaymentSystem",
-      ownerId,
-      `Payment of $${amount} received for your rental car.`
-    );
-    let renterNotification = new Message(
-      "PaymentSystem",
-      renterId,
-      `Payment of $${amount} processed successfully.`
-    );
-    messagesData.push(ownerNotification, renterNotification);
+    // Create notifications for both owner and renter using the notification system
+    notificationSubject.notifyObservers(`Payment of $${amount} received for your rental car.`, ownerId);
+    notificationSubject.notifyObservers(`Payment of $${amount} processed successfully.`, renterId);
+    
     res.send(`Payment successful. $${amount} has been processed for your rental.`);
   } else {
     res.send("Payment failed. Please try again.");

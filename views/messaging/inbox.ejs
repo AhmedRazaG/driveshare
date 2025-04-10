@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Messages - DriveShare</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    .message-list {
+      max-height: 600px;
+      overflow-y: auto;
+    }
+    .message-item {
+      transition: background-color 0.2s;
+    }
+    .message-item:hover {
+      background-color: #f8f9fa;
+    }
+    .unread {
+      background-color: #e3f2fd;
+    }
+    .message-meta {
+      font-size: 0.85em;
+      color: #6c757d;
+    }
+  </style>
+</head>
+<body class="bg-light">
+  <%- include('../partials/header') %>
+  <div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h2>Messages</h2>
+      <a href="/messaging/compose" class="btn btn-primary">
+        <i class="fas fa-pen"></i> New Message
+      </a>
+    </div>
+
+    <div class="card">
+      <div class="card-body">
+        <div class="message-list">
+          <% if (messages.length === 0) { %>
+            <p class="text-muted text-center">No messages yet.</p>
+          <% } else { %>
+            <% messages.forEach(function(message) { %>
+              <div class="message-item p-3 border-bottom <%= !message.readAt ? 'unread' : '' %>">
+                <a href="/messaging/view/<%= message.id %>" class="text-decoration-none text-dark">
+                  <div class="d-flex justify-content-between align-items-center">
+                    <h5 class="mb-1">
+                      <%= message.subject || '(No Subject)' %>
+                    </h5>
+                    <small class="message-meta">
+                      <%= new Date(message.createdAt).toLocaleString() %>
+                    </small>
+                  </div>
+                  <div class="d-flex justify-content-between align-items-center">
+                    <p class="mb-1">
+                      <strong>From:</strong> <%= message.senderName %> (<%= message.senderEmail %>)<br>
+                      <strong>To:</strong> <%= message.receiverName %> (<%= message.receiverEmail %>)
+                    </p>
+                    <% if (!message.readAt) { %>
+                      <span class="badge badge-primary">New</span>
+                    <% } %>
+                  </div>
+                  <p class="mb-1 text-truncate">
+                    <%= message.message %>
+                  </p>
+                </a>
+              </div>
+            <% }); %>
+          <% } %>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Font Awesome for icons -->
+  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+</body>
+</html> 

@@ -13,14 +13,57 @@
       color: green;
       margin-right: 5px;
     }
+    .search-box {
+      background-color: #f8f9fa;
+      padding: 20px;
+      border-radius: 5px;
+      margin-bottom: 30px;
+    }
+    .car-card {
+      transition: transform 0.2s;
+    }
+    .car-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
   </style>
 </head>
 <body class="bg-light">
   <%- include('partials/header') %>
   <div class="container mt-4">
-    <h2>Browse Available Cars</h2>
+    <div class="search-box">
+      <h3 class="mb-4">Search Available Cars</h3>
+      <form method="GET" action="/booking/browse" class="row">
+        <div class="col-md-4">
+          <div class="form-group">
+            <label>Location</label>
+            <input type="text" class="form-control" name="location" placeholder="Enter city or location">
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group">
+            <label>Car Model</label>
+            <input type="text" class="form-control" name="model" placeholder="Enter car model">
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group">
+            <label>Availability</label>
+            <input type="date" class="form-control" name="date">
+          </div>
+        </div>
+        <div class="col-12">
+          <button type="submit" class="btn btn-primary">Search Cars</button>
+          <a href="/booking/browse" class="btn btn-secondary">Show All Cars</a>
+        </div>
+      </form>
+    </div>
+
+    <h2 class="mb-4">Available Cars</h2>
     <% if (listings.length === 0) { %>
-      <p>No cars available. Please try a different search.</p>
+      <div class="alert alert-info">
+        <p>No cars available. Please try a different search.</p>
+      </div>
     <% } else { %>
       <div class="row">
         <% listings.forEach(function(listing) { 
@@ -30,26 +73,25 @@
              } catch(e) { console.error(e); }
         %>
           <div class="col-md-6 mb-4">
-            <div class="card">
+            <div class="card car-card">
               <div class="card-body">
                 <h3 class="card-title"><%= listing.model %> (<%= listing.year %>)</h3>
-                <p>Hosted by: <%= listing.ownerName %></p>
-                <p>
-                  <strong>Mileage:</strong> <%= listing.mileage %> miles<br>
-                  <strong>Location:</strong> <%= listing.pickupLocation %><br>
-                  <strong>Price:</strong> $<%= listing.rentalPrice %>/day<br>
-                  <strong>Contact:</strong> <%= listing.ownerName %> (<%= listing.ownerEmail %>)
-                </p>
+                <p class="text-muted">Hosted by: <%= listing.ownerName %></p>
+                <div class="mb-3">
+                  <span class="badge badge-info mr-2"><i class="fas fa-road"></i> <%= listing.mileage %> miles</span>
+                  <span class="badge badge-primary mr-2"><i class="fas fa-map-marker-alt"></i> <%= listing.pickupLocation %></span>
+                  <span class="badge badge-success"><i class="fas fa-dollar-sign"></i> $<%= listing.rentalPrice %>/day</span>
+                </div>
                 <hr>
                 <h5>Available Dates:</h5>
                 <% if (availableDates.length === 0) { %>
-                  <p>No available dates.</p>
+                  <p class="text-muted">No available dates.</p>
                 <% } else { %>
                   <ul class="list-unstyled">
                     <% availableDates.forEach(function(date) { %>
-                      <li class="available-date">
+                      <li class="available-date mb-2">
                         <span class="checkmark">&#10004;</span> <%= date %> 
-                        <a href="/booking/book?listingId=<%= listing.id %>&date=<%= date %>" class="btn btn-sm btn-primary">Rent</a>
+                        <a href="/booking/book?listingId=<%= listing.id %>&date=<%= date %>" class="btn btn-sm btn-primary float-right">Rent</a>
                       </li>
                     <% }); %>
                   </ul>
@@ -61,5 +103,7 @@
       </div>
     <% } %>
   </div>
+  <!-- Font Awesome for icons -->
+  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
 </body>
 </html>

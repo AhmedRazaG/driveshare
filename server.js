@@ -21,6 +21,26 @@ app.use(session({
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
+// Middleware to add notification count to all views
+app.use((req, res, next) => {
+  if (req.session.user) {
+    const db = require('./db/database');
+    const sql = "SELECT COUNT(*) as count FROM notifications WHERE uid = ?";
+    db.get(sql, [req.session.user.id], (err, row) => {
+      if (err) {
+        console.error("Error getting notification count:", err.message);
+        res.locals.notificationCount = 0;
+      } else {
+        res.locals.notificationCount = row ? row.count : 0;
+      }
+      next();
+    });
+  } else {
+    res.locals.notificationCount = 0;
+    next();
+  }
+});
+
 // Import route files.
 const authRoutes = require('./routes/auth');
 const carListingRoutes = require('./routes/carListing');
@@ -28,6 +48,7 @@ const bookingRoutes = require('./routes/booking');
 const messagingRoutes = require('./routes/messaging');
 const paymentRoutes = require('./routes/payment');
 const passwordRecoveryRoutes = require('./routes/passwordRecovery');
+const notificationsRoutes = require('./routes/notifications');
 
 // Use the routes.
 app.use('/auth', authRoutes);
@@ -36,6 +57,7 @@ app.use('/booking', bookingRoutes);
 app.use('/messaging', messagingRoutes);
 app.use('/payment', paymentRoutes);
 app.use('/password', passwordRecoveryRoutes);
+app.use('/notifications', notificationsRoutes);
 
 // Dashboard route: show personalized content.
 app.get('/dashboard', (req, res) => {

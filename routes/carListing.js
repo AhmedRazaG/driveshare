@@ -2,6 +2,7 @@
 const express = require('express');
 const router = express.Router();
 const db = require('../db/database');
+const notificationSubject = require('../models/notificationSubject');
 
 // Middleware: ensure that the user is logged in.
 function ensureLoggedIn(req, res, next) {
@@ -36,6 +37,10 @@ router.post('/create', ensureLoggedIn, (req, res) => {
       console.error("Create Listing Error:", err.message);
       return res.send("Error creating car listing.");
     }
+    
+    // Send notification to the user about successful car listing creation
+    notificationSubject.notifyObservers(`Your car listing for ${model} (${yearNum}) has been created successfully.`, ownerId);
+    
     res.redirect('/car/mylistings');
   });
 });
@@ -65,28 +70,26 @@ router.get('/edit/:id', ensureLoggedIn, (req, res) => {
   });
 });
 
-// ✅ POST /car/edit/:id – Process the full edit of a listing
+// ✅ POST /car/edit/:id – Process edit of a listing.
 router.post('/edit/:id', ensureLoggedIn, (req, res) => {
   const id = req.params.id;
   const { model, year, mileage, availability, pickupLocation, rentalPrice } = req.body;
-
+  
   // Convert numeric fields
   const yearNum = parseInt(year);
   const mileageNum = parseInt(mileage);
   const rentalPriceNum = parseFloat(rentalPrice);
-
-  const sql = `
-    UPDATE car_listings 
-    SET model = ?, year = ?, mileage = ?, availability = ?, pickupLocation = ?, rentalPrice = ? 
-    WHERE id = ? AND ownerId = ?`;
-
-  const params = [model, yearNum, mileageNum, availability, pickupLocation, rentalPriceNum, id, req.session.user.id];
-
-  db.run(sql, params, function(err) {
+  
+  const sql = "UPDATE car_listings SET model = ?, year = ?, mileage = ?, availability = ?, pickupLocation = ?, rentalPrice = ? WHERE id = ? AND ownerId = ?";
+  db.run(sql, [model, yearNum, mileageNum, availability, pickupLocation, rentalPriceNum, id, req.session.user.id], function(err) {
     if (err) {
-      console.error("Edit Listing Error:", err.message);
+      console.error(err.message);
       return res.send("Error updating listing.");
     }
+    
+    // Send notification about the edit
+    notificationSubject.notifyObservers(`Your car listing for ${model} (${yearNum}) has been updated successfully.`, req.session.user.id);
+    
     res.redirect('/car/mylistings');
   });
 });
@@ -94,6 +97,7 @@ router.post('/edit/:id', ensureLoggedIn, (req, res) => {
 // GET /car/delete/:id – Delete a listing if not booked.
 router.get('/delete/:id', ensureLoggedIn, (req, res) => {
   const id = req.params.id;
+  // First, check if there is any active booking for this listing.
   const sqlCheck = "SELECT COUNT(*) AS count FROM bookings WHERE listingId = ?";
   db.get(sqlCheck, [id], (err, row) => {
     if (err) {
@@ -103,13 +107,28 @@ router.get('/delete/:id', ensureLoggedIn, (req, res) => {
     if (row.count > 0) {
       return res.send("Cannot delete listing because it has active bookings. You can cancel bookings instead.");
     } else {
-      const sqlDelete = "DELETE FROM car_listings WHERE id = ? AND ownerId = ?";
-      db.run(sqlDelete, [id, req.session.user.id], function(err) {
+      // Get the car details before deleting for the notification
+      const sqlGetDetails = "SELECT model, year FROM car_listings WHERE id = ? AND ownerId = ?";
+      db.get(sqlGetDetails, [id, req.session.user.id], (err, carDetails) => {
         if (err) {
           console.error(err.message);
-          return res.send("Error deleting listing.");
+          return res.send("Error getting car details.");
         }
-        res.redirect('/car/mylistings');
+        
+        const sqlDelete = "DELETE FROM car_listings WHERE id = ? AND ownerId = ?";
+        db.run(sqlDelete, [id, req.session.user.id], function(err) {
+          if (err) {
+            console.error(err.message);
+            return res.send("Error deleting listing.");
+          }
+          
+          // Send notification about the deletion
+          if (carDetails) {
+            notificationSubject.notifyObservers(`Your car listing for ${carDetails.model} (${carDetails.year}) has been deleted.`, req.session.user.id);
+          }
+          
+          res.redirect('/car/mylistings');
+        });
       });
     }
   });

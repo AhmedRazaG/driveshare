@@ -19,20 +19,47 @@ const ensureLoggedIn = (req, res, next) => {
 /**
  * GET /booking/browse
  * Fetches car listings from the database and renders the browseCars.ejs page.
+ * Supports filtering by location, model, and date.
  */
 router.get('/browse', ensureLoggedIn, (req, res) => {
-  const sql = `
+  const { location, model, date } = req.query;
+  
+  let sql = `
     SELECT car_listings.*, users.fullName as ownerName 
     FROM car_listings 
     JOIN users ON car_listings.ownerId = users.id
+    WHERE 1=1
   `;
   
-  db.all(sql, [], (err, rows) => {
+  const params = [];
+  
+  // Add location filter if provided
+  if (location) {
+    sql += ` AND LOWER(car_listings.pickupLocation) LIKE LOWER(?)`;
+    params.push(`%${location}%`);
+  }
+  
+  // Add model filter if provided
+  if (model) {
+    sql += ` AND LOWER(car_listings.model) LIKE LOWER(?)`;
+    params.push(`%${model}%`);
+  }
+  
+  // Add date filter if provided
+  if (date) {
+    sql += ` AND car_listings.availability LIKE ?`;
+    params.push(`%${date}%`);
+  }
+  
+  db.all(sql, params, (err, rows) => {
     if (err) {
       console.error(err.message);
       return res.send("Error retrieving car listings.");
     }
-    res.render('browseCars', { listings: rows });
+    res.render('browseCars', { 
+      listings: rows,
+      searchParams: { location, model, date }
+    });
   });
 });
 
@@ -77,52 +104,80 @@ router.get('/results', (req, res) => {
  * GET /booking/book/:id
  * Renders the booking form for a selected car listing.
  */
-router.get('/book/:id', (req, res) => {
-  const id = Number(req.params.id);
-  const listing = carListings.find(listing => listing.id === id);
-  if (!listing) {
-    return res.send("Listing not found.");
-  }
-  res.render('bookingForm', { listing });
+router.get('/book/:id', ensureLoggedIn, (req, res) => {
+  const id = req.params.id;
+  const sql = `
+    SELECT car_listings.*, users.fullName as ownerName 
+    FROM car_listings 
+    JOIN users ON car_listings.ownerId = users.id
+    WHERE car_listings.id = ?
+  `;
+  
+  db.get(sql, [id], (err, listing) => {
+    if (err) {
+      console.error(err.message);
+      return res.send("Error retrieving car listing.");
+    }
+    if (!listing) {
+      return res.send("Listing not found.");
+    }
+    res.render('bookingForm', { listing });
+  });
 });
 
 /**
  * POST /booking/book/:id
- * Processes the booking form.
- * Expects form fields: renterId, bookingPeriod.
- * Checks if the car is already booked and, if not, confirms the booking.
+ * Processes a booking for a car listing.
  */
-router.post('/book/:id', (req, res) => {
-  const id = Number(req.params.id);
-  const { renterId, bookingPeriod } = req.body;
-  const listing = carListings.find(listing => listing.id === id);
-  if (!listing) {
-    return res.send("Listing not found.");
-  }
-
-  if (listing.isBooked) {
-    return res.send("This car is already booked for the selected period.");
-  }
-
-  const booking = new Booking(listing, renterId, bookingPeriod);
-
-  const observer = {
-    update: (messageText) => {
-      const notification = new Message("System", renterId, messageText);
-      messagesData.push(notification);
-      console.log("Notification sent:", messageText);
+router.post('/book/:id', ensureLoggedIn, (req, res) => {
+  const id = req.params.id;
+  const { startDate, endDate } = req.body;
+  const renterId = req.session.user.id;
+  
+  // First, check if the car is available for the requested dates
+  const checkSql = `
+    SELECT * FROM car_listings 
+    WHERE id = ? AND availability LIKE ? AND availability LIKE ?
+  `;
+  
+  db.get(checkSql, [id, `%${startDate}%`, `%${endDate}%`], (err, listing) => {
+    if (err) {
+      console.error(err.message);
+      return res.send("Error checking availability.");
     }
-  };
-  booking.addObserver(observer);
-
-  booking.confirmBooking();
-
-  listing.isBooked = true;
-
-  notificationSubject.notifyObservers(`Your booking for "${listing.model}" on ${bookingPeriod} is confirmed!`, req.session.user.id);
-  notificationSubject.notifyObservers(`Your car "${listing.model}" has been booked on ${bookingPeriod}.`, listing.ownerId);
-
-  res.send(`Booking confirmed for ${listing.model}. Booking period: ${bookingPeriod}`);
+    if (!listing) {
+      return res.send("Car is not available for the selected dates.");
+    }
+    
+    // Create the booking
+    const bookingSql = `
+      INSERT INTO bookings (listingId, renterId, startDate, endDate, status)
+      VALUES (?, ?, ?, ?, 'confirmed')
+    `;
+    
+    db.run(bookingSql, [id, renterId, startDate, endDate], function(err) {
+      if (err) {
+        console.error(err.message);
+        return res.send("Error creating booking.");
+      }
+      
+      // Update car availability
+      const updateSql = `
+        UPDATE car_listings 
+        SET isBooked = 1 
+        WHERE id = ?
+      `;
+      
+      db.run(updateSql, [id], function(err) {
+        if (err) {
+          console.error(err.message);
+          return res.send("Error updating car availability.");
+        }
+        
+        res.redirect('/booking/confirmation/' + this.lastID);
+      });
+    });
+  });
 });
 
 module.exports = router;

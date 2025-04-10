@@ -5,30 +5,63 @@
   <title>Car Details - DriveShare</title>
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
   <link rel="stylesheet" href="/css/style.css">
+  <style>
+    .contact-info {
+      background-color: #f8f9fa;
+      padding: 15px;
+      border-radius: 5px;
+      margin: 15px 0;
+    }
+    .car-features {
+      margin: 15px 0;
+    }
+    .feature-badge {
+      margin-right: 10px;
+      margin-bottom: 10px;
+    }
+  </style>
 </head>
 <body class="bg-light">
   <%- include('partials/header') %>
   <div class="container mt-4">
-    <h2>Car Details</h2>
     <div class="card mb-4">
       <div class="card-body">
-        <h5 class="card-title"><%= listing.model %> (<%= listing.year %>)</h5>
-        <p class="card-text">
-          Mileage: <%= listing.mileage %> miles<br>
-          Location: <%= listing.pickupLocation %><br>
-          Price: $<%= listing.rentalPrice %>/day<br>
-          Availability: <%= listing.availability %>
-        </p>
-        <p class="text-danger"><small>You must verify your password before booking this car.</small></p>
-        <form method="POST" action="/booking/verify/<%= listing.id %>">
-          <div class="form-group">
-            <label>Enter your Password</label>
-            <input type="password" class="form-control" name="password" placeholder="Your password" required>
-          </div>
-          <button type="submit" class="btn btn-primary">Verify & Book</button>
-        </form>
+        <h2 class="card-title"><%= listing.model %> (<%= listing.year %>)</h2>
+        
+        <div class="car-features">
+          <span class="badge badge-info feature-badge"><i class="fas fa-road"></i> <%= listing.mileage %> miles</span>
+          <span class="badge badge-primary feature-badge"><i class="fas fa-map-marker-alt"></i> <%= listing.pickupLocation %></span>
+          <span class="badge badge-success feature-badge"><i class="fas fa-dollar-sign"></i> $<%= listing.rentalPrice %>/day</span>
+        </div>
+
+        <div class="contact-info">
+          <h5>Contact Information</h5>
+          <p><strong>Host:</strong> <%= listing.ownerName %></p>
+          <p><strong>Email:</strong> <%= listing.ownerEmail %></p>
+          <a href="/messaging/compose?to=<%= listing.ownerEmail %>" class="btn btn-primary">
+            <i class="fas fa-envelope"></i> Message Host
+          </a>
+        </div>
+
+        <hr>
+
+        <h5>Available Dates:</h5>
+        <% if (listing.availability && listing.availability.length > 0) { %>
+          <ul class="list-unstyled">
+            <% JSON.parse(listing.availability).forEach(function(date) { %>
+              <li class="mb-2">
+                <span class="checkmark">&#10004;</span> <%= date %>
+                <a href="/booking/book/<%= listing.id %>?date=<%= date %>" class="btn btn-sm btn-success float-right">Book Now</a>
+              </li>
+            <% }); %>
+          </ul>
+        <% } else { %>
+          <p class="text-muted">No available dates.</p>
+        <% } %>
       </div>
     </div>
   </div>
+  <!-- Font Awesome for icons -->
+  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
 </body>
 </html>

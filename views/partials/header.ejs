@@ -18,7 +18,14 @@
       <!-- Messages -->
       <li class="nav-item"><a class="nav-link" href="/messaging">Messages</a></li>
       <!-- Notifications -->
-      <li class="nav-item"><a class="nav-link" href="/notifications">Notifications</a></li>
+      <li class="nav-item">
+        <a class="nav-link" href="/notifications">
+          Notifications
+          <% if (typeof notificationCount !== 'undefined' && notificationCount > 0) { %>
+            <span class="badge badge-light badge-pill"><%= notificationCount %></span>
+          <% } %>
+        </a>
+      </li>
       <!-- Logout -->
       <li class="nav-item"><a class="nav-link" href="/auth/logout">Logout</a></li>
     </ul>
