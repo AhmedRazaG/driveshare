@@ -1,4 +1,3 @@
-
 const db = require('../db/database');
 
 class NotificationSubject {
@@ -17,7 +16,7 @@ class NotificationSubject {
   }
   
   // Notify observers and insert into notifications table
-  notifyObservers(notification, uid) {
+  notifyObservers(uid, notification) {
     // Insert notification into the DB.
     const sql = "INSERT INTO notifications (uid, notification) VALUES (?, ?)";
     db.run(sql, [uid, notification], function(err) {

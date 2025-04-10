@@ -44,16 +44,41 @@ let db = new sqlite3.Database(DBSOURCE, (err) => {
       FOREIGN KEY(renterId) REFERENCES users(id)
     )`, (err) => { if (err) console.error(err.message); });
 
-    // Messages table
-    db.run(`CREATE TABLE IF NOT EXISTS messages (
+    // Drop and recreate messages table to ensure correct schema
+    db.run(`DROP TABLE IF EXISTS messages`, (err) => { 
+      if (err) console.error("Error dropping messages table: " + err.message);
+      
+      // Messages table - updated schema without subject field
+      db.run(`CREATE TABLE IF NOT EXISTS messages (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        senderId INTEGER,
+        receiverId INTEGER,
+        message TEXT,
+        createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+        readAt DATETIME,
+        FOREIGN KEY(senderId) REFERENCES users(id),
+        FOREIGN KEY(receiverId) REFERENCES users(id)
+      )`, (err) => { 
+        if (err) console.error("Error creating messages table: " + err.message);
+        else console.log("Messages table created successfully");
+      });
+    });
+
+    // Transactions table for payment records
+    db.run(`CREATE TABLE IF NOT EXISTS transactions (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
-      senderId INTEGER,
-      receiverId INTEGER,
-      content TEXT,
-      timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
-      FOREIGN KEY(senderId) REFERENCES users(id),
-      FOREIGN KEY(receiverId) REFERENCES users(id)
-    )`, (err) => { if (err) console.error(err.message); });
+      renterId INTEGER,
+      ownerId INTEGER,
+      amount REAL,
+      bookingId INTEGER,
+      createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+      FOREIGN KEY(renterId) REFERENCES users(id),
+      FOREIGN KEY(ownerId) REFERENCES users(id),
+      FOREIGN KEY(bookingId) REFERENCES bookings(id)
+    )`, (err) => { 
+      if (err) console.error("Error creating transactions table: " + err.message);
+      else console.log("Transactions table created successfully");
+    });
 
     // Notifications table for storing observer notifications
     db.run(`CREATE TABLE IF NOT EXISTS notifications (
